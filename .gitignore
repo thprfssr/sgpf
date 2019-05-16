@@ -1,0 +1,8 @@
+.*
+!.gitignore
+*.o
+*.tsv
+sgpf
+*.png
+*.pdf
+*.svg
