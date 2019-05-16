@@ -85,6 +85,8 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 		exit(-1);
 	}
 
+	printf("Summing between %"PRIu64" and %"PRIu64"...\n", a, b);
+
 	sief_set_zero(sief, size);
 	uint64_t r = isqrt(b);
 	bool *siever = SIEVER;
@@ -93,7 +95,13 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 			continue;
 		}
 
-		printf("Marking multiples of %"PRIu64"...\n", p);
+		/*
+		if (p < 1000) {
+			printf("Sieving multiples of %i...\n", p);
+		} else if (p == 1013) {
+			printf("Marking multiples of higher primes...\n");
+		}
+		*/
 
 		uint64_t i = a;
 		while (i % p != 0) {
