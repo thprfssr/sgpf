@@ -7,7 +7,7 @@
 
 #define INTERVAL_SIZE 10000000
 
-bool *SIEVER = NULL;
+bool *BASIS = NULL;
 
 bool is_prime(uint64_t n)
 {
@@ -28,13 +28,13 @@ uint64_t isqrt(uint64_t n)
 	return r;
 }
 
-bool *get_siever(uint64_t n)
+bool *get_basis(uint64_t n)
 {
 	uint64_t r = isqrt(n);
 	bool *list = NULL;
 	list = malloc((r + 1) * sizeof(bool));
 	if (list == NULL) {
-		printf("Error in get_siever(): Could not allocate enough memory for list! Exiting...\n");
+		printf("Error in get_basis(): Could not allocate enough memory for list! Exiting...\n");
 		exit(-1);
 	}
 
@@ -89,9 +89,9 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 
 	sief_set_zero(sief, size);
 	uint64_t r = isqrt(b);
-	bool *siever = SIEVER;
+	bool *basis = BASIS;
 	for (int p = 0; p <= r; p++) {
-		if (siever[p] == false) {
+		if (basis[p] == false) {
 			continue;
 		}
 
@@ -143,7 +143,7 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 
 uint64_t total_sum_greatest_prime_factors(uint64_t n)
 {
-	SIEVER = get_siever(n);
+	BASIS = get_basis(n);
 	uint64_t *sief = create_sief(INTERVAL_SIZE);
 
 	uint64_t q = n / INTERVAL_SIZE;
