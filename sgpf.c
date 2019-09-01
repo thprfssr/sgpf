@@ -9,6 +9,8 @@
 
 bool *BASIS = NULL;
 
+/* A simple primality check. It should be used sparingly, lest you want the
+ * program to take forever. */
 bool is_prime(uint64_t n)
 {
 	if (n <= 1) {
@@ -22,15 +24,20 @@ bool is_prime(uint64_t n)
 	return true;
 }
 
+/* Return the integer square root. */
 uint64_t isqrt(uint64_t n)
 {
 	uint64_t r = (uint64_t) floor(sqrt((double) n));
 	return r;
 }
 
+/* A basis is nothing more than an array of bools, which tells us the primality
+ * of each integer up to the square root of n. */
 bool *get_basis(uint64_t n)
 {
 	uint64_t r = isqrt(n);
+
+	/* Allocate enough memory for the list of bools. */
 	bool *list = NULL;
 	list = malloc((r + 1) * sizeof(bool));
 	if (list == NULL) {
@@ -38,6 +45,8 @@ bool *get_basis(uint64_t n)
 		exit(-1);
 	}
 
+	/* Set the values of the list of bools to reflect the primality of each
+	 * integer within the intended range of the list. */
 	for (int i = 0; i <= r; i++) {
 		list[i] = is_prime(i);
 	}
@@ -45,9 +54,11 @@ bool *get_basis(uint64_t n)
 	return list;
 }
 
-
+/* A sief is simply an array of integers. It's basically just a blank slate on
+ * which we will perform our future calculations. */
 uint64_t *create_sief(uint64_t n)
 {
+	/* Allocate enough memory for the sief. */
 	uint64_t *sief = NULL;
 	sief = malloc(n * sizeof(uint64_t));
 	if (sief == NULL) {
@@ -58,6 +69,7 @@ uint64_t *create_sief(uint64_t n)
 	return sief;
 }
 
+/* Set each sief entry to zero. */
 void sief_set_zero(uint64_t *sief, uint64_t size)
 {
 	for (uint64_t i = 0; i < size; i++) {
@@ -65,6 +77,7 @@ void sief_set_zero(uint64_t *sief, uint64_t size)
 	}
 }
 
+/* Sum up all the sief entries. */
 uint64_t sief_sum(uint64_t *sief, uint64_t size)
 {
 	uint64_t s = 0;
@@ -74,8 +87,13 @@ uint64_t sief_sum(uint64_t *sief, uint64_t size)
 	return s;
 }
 
+/* Take the greatest prime factor of each integer in the interval [a, b), and
+ * sum them all up. This algorithm requires a sief and its size. This is
+ * basically just a slate on which to perform calculations. */
 uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *sief, uint64_t size)
 {
+	/* Check that several assumptions hold. If they don't, then the program
+	 * simply dies. */
 	if (b <= a) {
 		printf("Error in partial_sum_greatest_prime_factors(): Upper bound must be strictly greater than lower bound! Exiting...\n");
 		exit(-1);
@@ -85,8 +103,24 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 		exit(-1);
 	}
 
+	/* Let the user know that everything is running smoothly. */
 	printf("Summing between %"PRIu64" and %"PRIu64"...\n", a, b);
 
+	/* In order to obtain a list of the greatest prime factor of each
+	 * integer within the interval [a, b), we first set every sief entry to
+	 * zero. This will basically be a blank slate on which we will perform
+	 * our calculations.
+	 *
+	 * Then, for each multiple of 2, we write a 2 in the corresponding sief
+	 * entry. This means that the greatest prime factor so far is 2.
+	 *
+	 * After that, we move on to 3, and we carry out the same process,
+	 * overwriting past entries if necessary. This overwriting is good,
+	 * because it means that we have found a greater prime factor than the
+	 * previous one.
+	 *
+	 * Then, keep going, until all the primes less than the square root of
+	 * b have been used. */
 	sief_set_zero(sief, size);
 	uint64_t r = isqrt(b);
 	bool *basis = BASIS;
@@ -103,6 +137,10 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 		}
 		*/
 
+		/* Let i be the smallest multiple of p, which must not be p
+		 * itself, and which must be within the interval [a, b). It
+		 * must not b itself, because we're dealing with primes in a
+		 * later part of this function. */
 		uint64_t i = a;
 		while (i % p != 0) {
 			i++;//shianne
@@ -110,15 +148,20 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 		if (i <= p) {
 			i += p;
 		}
+
+		/* For each multiple of p, we write p itself into the
+		 * corresponding sief entry. */
 		while (i < b) {
 			sief[i - a] = p;
 			i += p;
 		}
 	}
 
-	// This procedure doesn't take into account the primes
-	// nor the multiples of primes greater than r.
-	// Thus, we take them into account
+	/* However, the procedure outlined above does not take into account
+	 * the primes which are greater than the square root of b. Hence, we
+	 * must now take care of them. And since I was gonna take care of
+	 * primes here, I might as well take care of the primes which are less
+	 * than or equal to the square root of b. */
 	for (int i = a; i < b; i++) {
 		if (sief[i - a] == 0 && i > 1) {
 			sief[i - a] = i;
@@ -130,7 +173,9 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 		}
 	}
 
-	// But we don't wanna include the 0 and 1 cases
+	/* Just in case that the procedure above messed up with the special
+	 * cases of 0 and 1, we take care of them here. For our purposes, zero
+	 * is the greatest prime factor of both 0 and 1. */
 	if (a == 1) {
 		sief[1 - a] = 0;
 	} else if (a == 0) {
@@ -138,17 +183,25 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 		sief[1 - a] = 0;
 	}
 
+	/* Finally, return the sum of the sief entries. */
 	return sief_sum(sief, size);
 }
 
+/* Apply the partial_sum_great_prime_factors() function in adjacent intervals
+ * in order to get a total sum of one grand interval. */
 uint64_t total_sum_greatest_prime_factors(uint64_t n)
 {
+	/* Create the basis and sief to be used. */
 	BASIS = get_basis(n);
 	uint64_t *sief = create_sief(INTERVAL_SIZE);
 
+	/* Divide up the interval [0, n) into smaller intervals, given by the
+	 * global INTERVAL_SIZE. */
 	uint64_t q = n / INTERVAL_SIZE;
 	uint64_t r = n % INTERVAL_SIZE;
 
+	/* Start adding within each interval, and after that, take care of the
+	 * last interval. */
 	uint64_t s = 0;
 	for (uint64_t k = 0; k < q; k++) {
 		s += partial_sum_greatest_prime_factors(k * INTERVAL_SIZE, (k + 1) * INTERVAL_SIZE, sief, INTERVAL_SIZE);
@@ -157,13 +210,17 @@ uint64_t total_sum_greatest_prime_factors(uint64_t n)
 		s += partial_sum_greatest_prime_factors(q * INTERVAL_SIZE, n, sief, INTERVAL_SIZE);
 	}
 
+	/* Finally, let the user know the grand sum, and return it. */
 	printf("The total sum of all the greatest prime factors strictly less than %" PRIu64 " is:\n%" PRIu64 "\n", n, s);
 	return s;
 }
 
 int main(int *argc, char **argv)
 {
+	/* Obtain an integer as an argument. */
 	uint64_t n = strtoull(argv[1], NULL, 10);
+
+	/* Start chugging. */
 	total_sum_greatest_prime_factors(n);
 
 
