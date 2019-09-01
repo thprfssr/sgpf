@@ -70,18 +70,18 @@ uint64_t *create_sief(uint64_t n)
 }
 
 /* Set each sief entry to zero. */
-void sief_set_zero(uint64_t *sief, uint64_t size)
+void sief_set_zero(uint64_t *sief, uint64_t sief_size)
 {
-	for (uint64_t i = 0; i < size; i++) {
+	for (uint64_t i = 0; i < sief_size; i++) {
 		sief[i] = 0;
 	}
 }
 
 /* Sum up all the sief entries. */
-uint64_t sief_sum(uint64_t *sief, uint64_t size)
+uint64_t sief_sum(uint64_t *sief, uint64_t sief_size)
 {
 	uint64_t s = 0;
-	for (uint64_t i = 0; i < size; i++)
+	for (uint64_t i = 0; i < sief_size; i++)
 		s += sief[i];
 
 	return s;
@@ -90,7 +90,7 @@ uint64_t sief_sum(uint64_t *sief, uint64_t size)
 /* Take the greatest prime factor of each integer in the interval [a, b), and
  * sum them all up. This algorithm requires a sief and its size. This is
  * basically just a slate on which to perform calculations. */
-uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *sief, uint64_t size)
+uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *sief, uint64_t sief_size)
 {
 	/* Check that several assumptions hold. If they don't, then the program
 	 * simply dies. */
@@ -98,7 +98,7 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 		printf("Error in partial_sum_greatest_prime_factors(): Upper bound must be strictly greater than lower bound! Exiting...\n");
 		exit(-1);
 	}
-	if (b - a > size) {
+	if (b - a > sief_size) {
 		printf("Error in partial_sum_greatest_prime_factors(): Sief size must be greater than or equal to b - a. Exiting...\n");
 		exit(-1);
 	}
@@ -121,7 +121,7 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 	 *
 	 * Then, keep going, until all the primes less than the square root of
 	 * b have been used. */
-	sief_set_zero(sief, size);
+	sief_set_zero(sief, sief_size);
 	uint64_t r = isqrt(b);
 	bool *basis = BASIS;
 	for (int p = 0; p <= r; p++) {
@@ -184,7 +184,7 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 	}
 
 	/* Finally, return the sum of the sief entries. */
-	return sief_sum(sief, size);
+	return sief_sum(sief, sief_size);
 }
 
 /* Apply the partial_sum_great_prime_factors() function in adjacent intervals
