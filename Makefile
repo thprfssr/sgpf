@@ -5,7 +5,7 @@ all: $(OBJECT)
 SOURCE = sgpf.c
 OBJECT = sgpf.o
 OUTPUT = sgpf
-LFLAGS = -lm
+LFLAGS = -lm -lgmp
 
 # Compilation flags to be added from the commandline (e.g. `-g` or `-DDEBUG`)
 CFLAGS += $(CLIFLAGS)
