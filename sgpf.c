@@ -132,21 +132,13 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 			continue;
 		}
 
-		/*
-		if (p < 1000) {
-			printf("Sieving multiples of %i...\n", p);
-		} else if (p == 1013) {
-			printf("Marking multiples of higher primes...\n");
-		}
-		*/
-
 		/* Let i be the smallest multiple of p, which must not be p
 		 * itself, and which must be within the interval [a, b). It
 		 * must not b itself, because we're dealing with primes in a
 		 * later part of this function. */
 		uint64_t i = a;
 		while (i % p != 0) {
-			i++;//shianne
+			i++;
 		}
 		while (i <= p) {
 			i += p;
