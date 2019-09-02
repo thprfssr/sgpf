@@ -115,6 +115,15 @@ bool *get_basis(uint64_t n)
 	return list;
 }
 
+/* Return n / f^m, where f^m is the greatest power of f which divides n. */
+uint64_t divide_out(uint64_t n, uint64_t f)
+{
+	while (n % f == 0) {
+		n /= f;
+	}
+	return n;
+}
+
 /* A slate is simply an array of integers. It's basically just a blank slate on
  * which we will perform our future calculations. */
 uint64_t *create_slate(uint64_t n)
