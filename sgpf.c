@@ -78,20 +78,41 @@ void sief_set_zero(uint64_t *sief, uint64_t size)
 	}
 }
 
-/* Sum up all the sief entries. */
-uint64_t sief_sum(uint64_t *sief, uint64_t size)
+/* Sum up all the sief entries, and return the total sum as a decimal string */
+char* sief_sum(uint64_t *sief, uint64_t size)
 {
-	uint64_t s = 0;
-	for (uint64_t i = 0; i < size; i++)
-		s += sief[i];
+	//uint64_t s = 0;
 
-	return s;
+	/* Declare a GMP integer, and initialize it to 0. */
+	mpz_t s;
+	mpz_init(s);
+
+	/* Add up all the sief entries. */
+	for (uint64_t i = 0; i < size; i++) {
+		//s += sief[i];
+		mpz_add_ui(s, s, sief[i]);
+	}
+
+	/* Convert s to a decimal string. Exit if the string is NULL. Finally,
+	 * clear the variable s. */
+	char *str = NULL;
+	str = mpz_get_str(str, 10, s);
+	mpz_clear(s);
+	if (str == NULL) {
+		printf("Error in sief_sum(): str is NULL! Exiting...\n");
+		exit(-1);
+	}
+
+	/* Return the total sum as a decimal string. */
+	return str;
 }
 
 /* Take the greatest prime factor of each integer in the interval [a, b), and
  * sum them all up. This algorithm requires a sief and its size. This is
- * basically just a slate on which to perform calculations. */
-uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *sief, uint64_t size)
+ * basically just a slate on which to perform calculations.
+ *
+ * The sum is returned as a decimal string. */
+char* partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *sief, uint64_t size)
 {
 	/* Check that several assumptions hold. If they don't, then the program
 	 * simply dies. */
@@ -184,13 +205,13 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 		sief[1 - a] = 0;
 	}
 
-	/* Finally, return the sum of the sief entries. */
+	/* Finally, return the sum of the sief entries as a decimal string. */
 	return sief_sum(sief, size);
 }
 
 /* Apply the partial_sum_great_prime_factors() function in adjacent intervals
  * in order to get a total sum of one grand interval. */
-uint64_t total_sum_greatest_prime_factors(uint64_t n)
+char* total_sum_greatest_prime_factors(uint64_t n)
 {
 	/* Create the basis and sief to be used. */
 	BASIS = get_basis(n);
@@ -202,18 +223,39 @@ uint64_t total_sum_greatest_prime_factors(uint64_t n)
 	uint64_t r = n % INTERVAL_SIZE;
 
 	/* Start adding within each interval, and after that, take care of the
-	 * last interval. */
-	uint64_t s = 0;
+	 * last interval. Use a GMP integer to handle the total sum.*/
+	//uint64_t s = 0;
+	mpz_t s;
+	mpz_init(s);
+	mpz_t tmp;
+	mpz_init(tmp);
 	for (uint64_t k = 0; k < q; k++) {
-		s += partial_sum_greatest_prime_factors(k * INTERVAL_SIZE, (k + 1) * INTERVAL_SIZE, sief, INTERVAL_SIZE);
+		char *str = partial_sum_greatest_prime_factors(k * INTERVAL_SIZE, (k + 1) * INTERVAL_SIZE, sief, INTERVAL_SIZE);
+		mpz_set_str(tmp, str, 10);
+		mpz_add(s, s, tmp);
+		//s += partial_sum_greatest_prime_factors(k * INTERVAL_SIZE, (k + 1) * INTERVAL_SIZE, sief, INTERVAL_SIZE);
 	}
 	if (r > 0) {
-		s += partial_sum_greatest_prime_factors(q * INTERVAL_SIZE, n, sief, INTERVAL_SIZE);
+		char *str = partial_sum_greatest_prime_factors(q * INTERVAL_SIZE, n, sief, INTERVAL_SIZE);
+		mpz_set_str(tmp, str, 10);
+		mpz_add(s, s, tmp);
+		//s += partial_sum_greatest_prime_factors(q * INTERVAL_SIZE, n, sief, INTERVAL_SIZE);
+	}
+
+	/* Convert the sum to a decimal string, and clear all the GMP
+	 * variables. Exit if the string is NULL. */
+	char *str = NULL;
+	str = mpz_get_str(str, 10, s);
+	mpz_clear(s);
+	mpz_clear(tmp);
+	if (str == NULL) {
+		printf("Error in total_sum_greatest_prime_factors(): str is NULL! Exiting...\n");
+		exit(-1);
 	}
 
 	/* Finally, let the user know the grand sum, and return it. */
-	printf("The total sum of all the greatest prime factors strictly less than %" PRIu64 " is:\n%" PRIu64 "\n", n, s);
-	return s;
+	printf("The total sum of all the greatest prime factors strictly less than %" PRIu64 " is:\n%s\n", n, str);
+	return str;
 }
 
 int main(int *argc, char **argv)
