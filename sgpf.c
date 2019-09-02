@@ -8,6 +8,9 @@
 
 #define INTERVAL_SIZE 10000000
 
+/* FIXME: The final result that the program spits out is dependent on the
+ * chosen interval size. */
+
 bool *BASIS = NULL;
 
 /* A simple primality check. It should be used sparingly, lest you want the
@@ -71,15 +74,15 @@ uint64_t *create_sief(uint64_t n)
 }
 
 /* Set each sief entry to zero. */
-void sief_set_zero(uint64_t *sief, uint64_t size)
+void sief_set_zero(uint64_t *sief, uint64_t sief_size)
 {
-	for (uint64_t i = 0; i < size; i++) {
+	for (uint64_t i = 0; i < sief_size; i++) {
 		sief[i] = 0;
 	}
 }
 
 /* Sum up all the sief entries, and return the total sum as a decimal string */
-char* sief_sum(uint64_t *sief, uint64_t size)
+char* sief_sum(uint64_t *sief, uint64_t sief_size)
 {
 	//uint64_t s = 0;
 
@@ -88,7 +91,7 @@ char* sief_sum(uint64_t *sief, uint64_t size)
 	mpz_init(s);
 
 	/* Add up all the sief entries. */
-	for (uint64_t i = 0; i < size; i++) {
+	for (uint64_t i = 0; i < sief_size; i++) {
 		//s += sief[i];
 		mpz_add_ui(s, s, sief[i]);
 	}
@@ -112,7 +115,7 @@ char* sief_sum(uint64_t *sief, uint64_t size)
  * basically just a slate on which to perform calculations.
  *
  * The sum is returned as a decimal string. */
-char* partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *sief, uint64_t size)
+char* partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *sief, uint64_t sief_size)
 {
 	/* Check that several assumptions hold. If they don't, then the program
 	 * simply dies. */
@@ -120,7 +123,7 @@ char* partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *sief,
 		printf("Error in partial_sum_greatest_prime_factors(): Upper bound must be strictly greater than lower bound! Exiting...\n");
 		exit(-1);
 	}
-	if (b - a > size) {
+	if (b - a > sief_size) {
 		printf("Error in partial_sum_greatest_prime_factors(): Sief size must be greater than or equal to b - a. Exiting...\n");
 		exit(-1);
 	}
@@ -143,7 +146,7 @@ char* partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *sief,
 	 *
 	 * Then, keep going, until all the primes less than the square root of
 	 * b have been used. */
-	sief_set_zero(sief, size);
+	sief_set_zero(sief, sief_size);
 	uint64_t r = isqrt(b);
 	bool *basis = BASIS;
 	for (int p = 0; p <= r; p++) {
@@ -167,7 +170,7 @@ char* partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *sief,
 		while (i % p != 0) {
 			i++;//shianne
 		}
-		if (i <= p) {
+		while (i <= p) {
 			i += p;
 		}
 
@@ -206,7 +209,7 @@ char* partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *sief,
 	}
 
 	/* Finally, return the sum of the sief entries as a decimal string. */
-	return sief_sum(sief, size);
+	return sief_sum(sief, sief_size);
 }
 
 /* Apply the partial_sum_great_prime_factors() function in adjacent intervals
