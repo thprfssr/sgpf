@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <gmp.h>
 
-#define INTERVAL_SIZE 10000000
+#define MAX_INTERVAL_SIZE 10000000
 
 /* DISCUSSION: This is the algorithm used to find the greatest prime factors.
  * Start by making a list of every integer in the partial interval [a, b). Since
@@ -270,6 +270,8 @@ char* total_sum_gpf(uint64_t n, uint64_t interval_size)
 	BASIS = get_basis(n);
 	if (n <= interval_size)
 		interval_size = n;
+	if (MAX_INTERVAL_SIZE <= interval_size)
+		interval_size = MAX_INTERVAL_SIZE;
 	uint64_t *slate = create_slate(interval_size);
 
 	/* Divide up the interval [0, n) into smaller intervals, whose sizes are
