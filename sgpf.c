@@ -124,6 +124,27 @@ uint64_t divide_out(uint64_t n, uint64_t f)
 	return n;
 }
 
+/* Returns the smallest multiple of n not less than a. */
+uint64_t smallest_multiple_not_less_than(uint64_t n, uint64_t a)
+{
+	uint64_t i = a;
+	while (i % n != 0)
+		i++;
+
+	return i;
+}
+
+/* Returns the smallest multiple of n not less than a, excluding n itself, and
+ * the special case of 0. */
+uint64_t smallest_strict_multiple_not_less_than(uint64_t n, uint64_t a)
+{
+	uint64_t i = smallest_multiple_not_less_than(n, a);
+	while (i <= n)
+		i += n;
+
+	return i;
+}
+
 /* A slate is simply an array of integers. It's basically just a blank slate on
  * which we will perform our future calculations. */
 uint64_t *create_slate(uint64_t n)
