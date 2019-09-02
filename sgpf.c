@@ -6,6 +6,8 @@
 #include <stdbool.h>
 #include <gmp.h>
 
+#include "arithmetic.h"
+
 #define MAX_INTERVAL_SIZE 10000000
 
 /* DISCUSSION: This is the algorithm used to find the greatest prime factors.
