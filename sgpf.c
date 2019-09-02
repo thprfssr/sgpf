@@ -167,7 +167,6 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 	 * than or equal to the square root of b. */
 	for (int i = a; i < b; i++) {
 		if (sief[i - a] == 0 && i - a > 1) {
-			sief[i - a] = i;
 			uint64_t j = i;
 			while (j < b) {
 				sief[j - a] = i;
