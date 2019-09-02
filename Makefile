@@ -2,8 +2,8 @@ CC = gcc
 
 all: $(OBJECT)
 
-SOURCE = sgpf.c arithmetic.c
-OBJECT = sgpf.o arithmetic.o
+SOURCE = sgpf.c arithmetic.c basis.c
+OBJECT = sgpf.o arithmetic.o basis.o
 OUTPUT = sgpf
 LFLAGS = -lm -lgmp
 
@@ -18,6 +18,7 @@ sgpf: $(OBJECT)
 
 sgpf.o: arithmetic.h
 arithmetic.o: arithmetic.h
+basis.o: arithmetic.h basis.h
 
 clean:
 	rm -f $(OUTPUT) $(OBJECT)
