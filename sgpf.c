@@ -214,7 +214,7 @@ void partial_sum_assumption_check(uint64_t a, uint64_t b, uint64_t *slate, uint6
  * basically just a slate on which to perform calculations.
  *
  * The sum is returned as a decimal string. */
-char* partial_sum_gpf_new_algorithm(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_size)
+char* partial_sum_gpf(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_size)
 {
 	/* Check that several assumptions hold, or die. */
 	partial_sum_assumption_check(a, b, slate, slate_size);
@@ -284,12 +284,12 @@ char* total_sum_gpf(uint64_t n, uint64_t interval_size)
 	mpz_t tmp;
 	mpz_init(tmp);
 	for (uint64_t k = 0; k < q; k++) {
-		char *str = partial_sum_gpf_new_algorithm(k * interval_size, (k + 1) * interval_size, slate, interval_size);
+		char *str = partial_sum_gpf(k * interval_size, (k + 1) * interval_size, slate, interval_size);
 		mpz_set_str(tmp, str, 10);
 		mpz_add(s, s, tmp);
 	}
 	if (r > 0) {
-		char *str = partial_sum_gpf_new_algorithm(q * interval_size, n, slate, interval_size);
+		char *str = partial_sum_gpf(q * interval_size, n, slate, interval_size);
 		mpz_set_str(tmp, str, 10);
 		mpz_add(s, s, tmp);
 	}
