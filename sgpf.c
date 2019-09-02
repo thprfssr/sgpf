@@ -167,6 +167,31 @@ char* slate_sum(uint64_t *slate, uint64_t slate_size)
 	return str;
 }
 
+/* This function sets the slate elements equal to consecutive integers between
+ * a and b. That is, the slate is set to [a, a+1, a+2, ... , b-2, b-1]. Notice
+ * that it stops at b-1, and doesn't include the endpoint b.
+ *
+ * If the range is smaller than the size, then the remaining elements will be
+ * set to zero.
+ *
+ * This function assumes that a < b, and that b - a > slate size, and that
+ * slate != NULL. The function makes no effort of actually verifying these
+ * assumptions, so be careful. */
+void slate_set_consecutive(uint64_t *slate, uint64_t slate_size, uint64_t a, uint64_t b)
+{
+	for (uint64_t i = a; i < b; i++)
+	{
+		slate[i - a] = i;
+	}
+
+	/* Set the remaining elements to zero. It is more efficient to zero
+	 * these few elements at the end rather than to zero every element in
+	 * the beginning. */
+	for (uint64_t i = b; i < slate_size; i++) {
+		slate[i - a] = 0;
+	}
+}
+
 /* Check that several important assumptions hold. These assumptions are made for
  * the function partial_sum_gpf(). If one of the assumptions
  * fails, then the program simply dies. */
