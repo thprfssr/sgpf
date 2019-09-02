@@ -39,6 +39,34 @@
  * are below 1T is roughly 38G. And 38G * sizeof(uint64_t) = fuckton. We need a
  * compact way to store these primes. */
 
+/* DISCUSSION: What if we used a different algorithm for finding the greatest
+ * prime factors? Start by making a list of every integer in the partial
+ * interval [a, b). Since 0 and 1 mess everything up, we're going to overwrite
+ * them both with a 0.
+ *
+ * Start with the prime p = 2. Then, for every multiple of 2 in the list,
+ * including 2 itself, divide and keep dividing by 2 until you can't divide
+ * anymore. There should be some 1's left, but not all of them are 1's. If you
+ * end up with 1, it means that the number was a power of 2, and consequently,
+ * its greatest prime factor must be 2. Hence, we should count the number of
+ * ones, multiply that quantity by 2, and add it to our running sum. Then set
+ * all the 1's to 0's.
+ *
+ * Then, do the same thing with the next prime p = 3. If you encounter a number
+ * which you already divided by 2, then keep it as it is, and divide by 3 as if
+ * nothing. Count all the 1's that appeared, multiply this quantity by 3, and
+ * add it to the running sum. Set all the 1's to 0's.
+ *
+ * Repeat the same procedure for every prime less than or equal to the integer
+ * square root of b. Then, what's left must either zeroes, or primes. We can now
+ * safely add everything up, and add it to our running sum.
+ *
+ * Once you're done, the running sum should be equal to the actual sum of
+ * greatest prime factors.
+ *
+ * I tried this out with a couple of random intervals which don't start at zero,
+ * and it worked! I think this really might be the algorithm I need. */
+
 bool *BASIS = NULL;
 
 /* A simple primality check. It should be used sparingly, lest you want the
