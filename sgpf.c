@@ -381,16 +381,16 @@ char* partial_sum_gpf_new_algorithm(uint64_t a, uint64_t b, uint64_t *slate, uin
 
 /* Apply the partial_sum_great_prime_factors() function in adjacent intervals
  * in order to get a total sum of one grand interval. */
-char* total_sum_gpf(uint64_t n)
+char* total_sum_gpf(uint64_t n, uint64_t interval_size)
 {
 	/* Create the basis and slate to be used. */
 	BASIS = get_basis(n);
-	uint64_t *slate = create_slate(INTERVAL_SIZE);
+	uint64_t *slate = create_slate(interval_size);
 
-	/* Divide up the interval [0, n) into smaller intervals, given by the
-	 * global INTERVAL_SIZE. */
-	uint64_t q = n / INTERVAL_SIZE;
-	uint64_t r = n % INTERVAL_SIZE;
+	/* Divide up the interval [0, n) into smaller intervals, whose sizes are
+	 * given by the variable `interval_size`. */
+	uint64_t q = n / interval_size;
+	uint64_t r = n % interval_size;
 
 	/* Start adding within each interval, and after that, take care of the
 	 * last interval. Use a GMP integer to handle the total sum.*/
@@ -400,13 +400,13 @@ char* total_sum_gpf(uint64_t n)
 	mpz_t tmp;
 	mpz_init(tmp);
 	for (uint64_t k = 0; k < q; k++) {
-		char *str = partial_sum_gpf_new_algorithm(k * INTERVAL_SIZE, (k + 1) * INTERVAL_SIZE, slate, INTERVAL_SIZE);
+		char *str = partial_sum_gpf_new_algorithm(k * interval_size, (k + 1) * interval_size, slate, interval_size);
 		mpz_set_str(tmp, str, 10);
 		mpz_add(s, s, tmp);
 		//s += partial_sum_gpf(k * INTERVAL_SIZE, (k + 1) * INTERVAL_SIZE, slate, INTERVAL_SIZE);
 	}
 	if (r > 0) {
-		char *str = partial_sum_gpf_new_algorithm(q * INTERVAL_SIZE, n, slate, INTERVAL_SIZE);
+		char *str = partial_sum_gpf_new_algorithm(q * interval_size, n, slate, interval_size);
 		mpz_set_str(tmp, str, 10);
 		mpz_add(s, s, tmp);
 		//s += partial_sum_gpf(q * INTERVAL_SIZE, n, slate, INTERVAL_SIZE);
@@ -433,8 +433,11 @@ int main(int *argc, char **argv)
 	/* Obtain an integer as an argument. */
 	uint64_t n = strtoull(argv[1], NULL, 10);
 
+	/* Obtain the interval size as an argument. */
+	uint64_t interval_size = strtoull(argv[2], NULL, 10);
+
 	/* Start chugging. */
-	total_sum_gpf(n);
+	total_sum_gpf(n, interval_size);
 
 
 	return 0;
