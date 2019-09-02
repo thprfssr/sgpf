@@ -145,7 +145,7 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 		while (i % p != 0) {
 			i++;//shianne
 		}
-		if (i <= p) {
+		while (i <= p) {
 			i += p;
 		}
 
