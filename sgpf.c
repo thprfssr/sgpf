@@ -35,6 +35,10 @@
  * goes overboard, but we shouldn't do that too often, because it would slow
  * the program down. */
 
+/* PROBLEM: Storing primes is a non-trivial task. The amount of primes which
+ * are below 1T is roughly 38G. And 38G * sizeof(uint64_t) = fuckton. We need a
+ * compact way to store these primes. */
+
 bool *BASIS = NULL;
 
 /* A simple primality check. It should be used sparingly, lest you want the
