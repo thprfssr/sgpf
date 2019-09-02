@@ -345,8 +345,22 @@ char* partial_sum_gpf_new_algorithm(uint64_t a, uint64_t b, uint64_t *slate, uin
 		if (basis[p] == false) {
 			continue;
 		}
-	}
 
+		uint64_t i = smallest_multiple_not_less_than(p, a);
+		while (i < b) {
+			/* Divide out all the multiples of p. */
+			uint64_t u = slate[i - a];
+			u = divide_out(u, p);
+
+			/* If the result is 1, then set the slate entry to p.
+			 * Otherwise, set it equal to u. */
+			if (u == 1)
+				slate[i - a] = p;
+			else
+				slate[i - a] = u;
+		}
+	}
+	return slate_sum(slate, slate_size);
 }
 
 
