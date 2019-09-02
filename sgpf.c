@@ -8,42 +8,9 @@
 
 #define INTERVAL_SIZE 10000000
 
-/* FIXME: The final result that the program spits out is dependent on the
- * chosen interval size. */
-
-/* DISCUSSION: AH! I think I found the cause. Let N = 40, and let the interval
- * size be 20. The first partial interval of [0, 20) goes smoothly, but let's
- * take a look at the second partial interval of [20, 40). The integer square
- * root of 40 is 6, so we only need to consider the primes {2, 3, 5} according
- * to my algorithm. We start writing `2` into the entry of each multiple of 2,
- * and likewise we write `3`, and `5`. Then the empty entries that remain must
- * be prime numbers, so we mark them as well, along with their multiples.
- *
- * But look! According to this algorithm, the greatest prime factor of 21 is
- * supposedly 3. How alarming! My gut says that THIS is the reason that the
- * total sum is dependent on the interval size.
- *
- * This problem only arises if we're dealing with an interval that doesn't
- * start at zero. Hence, if the interval size is as big as N or bigger, then
- * this shouldn't be a problem. */
-
-/* SOLUTION: As we're summing up each partial interval, we need to have kept
- * track of all the primes we encountered in the previous partial intervals. We
- * can keep these primes in an array. The amount of memory required for this
- * array can be determined by some magic formula that might exist, or we can
- * simply keep a file which contains pi(k) for a couple of values of k, where
- * pi is the prime counting function. We could also reallocate the array if it
- * goes overboard, but we shouldn't do that too often, because it would slow
- * the program down. */
-
-/* PROBLEM: Storing primes is a non-trivial task. The amount of primes which
- * are below 1T is roughly 38G. And 38G * sizeof(uint64_t) = fuckton. We need a
- * compact way to store these primes. */
-
-/* DISCUSSION: What if we used a different algorithm for finding the greatest
- * prime factors? Start by making a list of every integer in the partial
- * interval [a, b). Since 0 and 1 mess everything up, we're going to overwrite
- * them both with a 0.
+/* DISCUSSION: This is the algorithm used to find the greatest prime factors.
+ * Start by making a list of every integer in the partial interval [a, b). Since
+ * 0 and 1 mess everything up, we're going to overwrite them both with a 0.
  *
  * Start with the prime p = 2. Then, for every multiple of 2 in the list,
  * including 2 itself, divide and keep dividing by 2 until you can't divide
@@ -63,13 +30,8 @@
  * safely add everything up, and add it to our running sum.
  *
  * Once you're done, the running sum should be equal to the actual sum of
- * greatest prime factors.
- *
- * I tried this out with a couple of random intervals which don't start at zero,
- * and it worked! I think this really might be the algorithm I need. */
+ * greatest prime factors. */
 
-/* FIXME: The total sum is the same if the interval size evenly divides N.
- * However, if it doesn't evenly divide N, then the sum is different. */
 
 bool *BASIS = NULL;
 
@@ -181,15 +143,12 @@ void slate_set_zero(uint64_t *slate, uint64_t slate_size)
 /* Sum up all the slate entries, and return the total sum as a decimal string */
 char* slate_sum(uint64_t *slate, uint64_t slate_size)
 {
-	//uint64_t s = 0;
-
 	/* Declare a GMP integer, and initialize it to 0. */
 	mpz_t s;
 	mpz_init(s);
 
 	/* Add up all the slate entries. */
 	for (uint64_t i = 0; i < slate_size; i++) {
-		//s += slate[i];
 		mpz_add_ui(s, s, slate[i]);
 	}
 
@@ -399,7 +358,6 @@ char* total_sum_gpf(uint64_t n, uint64_t interval_size)
 
 	/* Start adding within each interval, and after that, take care of the
 	 * last interval. Use a GMP integer to handle the total sum.*/
-	//uint64_t s = 0;
 	mpz_t s;
 	mpz_init(s);
 	mpz_t tmp;
@@ -408,13 +366,11 @@ char* total_sum_gpf(uint64_t n, uint64_t interval_size)
 		char *str = partial_sum_gpf_new_algorithm(k * interval_size, (k + 1) * interval_size, slate, interval_size);
 		mpz_set_str(tmp, str, 10);
 		mpz_add(s, s, tmp);
-		//s += partial_sum_gpf(k * INTERVAL_SIZE, (k + 1) * INTERVAL_SIZE, slate, INTERVAL_SIZE);
 	}
 	if (r > 0) {
 		char *str = partial_sum_gpf_new_algorithm(q * interval_size, n, slate, interval_size);
 		mpz_set_str(tmp, str, 10);
 		mpz_add(s, s, tmp);
-		//s += partial_sum_gpf(q * INTERVAL_SIZE, n, slate, INTERVAL_SIZE);
 	}
 
 	/* Convert the sum to a decimal string, and clear all the GMP
