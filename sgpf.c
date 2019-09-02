@@ -370,6 +370,8 @@ char* total_sum_gpf(uint64_t n, uint64_t interval_size)
 {
 	/* Create the basis and slate to be used. */
 	BASIS = get_basis(n);
+	/* NOTE: We can optimize this line by not using more space than needed;
+	 * if n < interval_size, then just let interval_size = n. */
 	uint64_t *slate = create_slate(interval_size);
 
 	/* Divide up the interval [0, n) into smaller intervals, whose sizes are
