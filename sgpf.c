@@ -114,43 +114,43 @@ bool *get_basis(uint64_t n)
 	return list;
 }
 
-/* A sief is simply an array of integers. It's basically just a blank slate on
+/* A slate is simply an array of integers. It's basically just a blank slate on
  * which we will perform our future calculations. */
-uint64_t *create_sief(uint64_t n)
+uint64_t *create_slate(uint64_t n)
 {
-	/* Allocate enough memory for the sief. */
-	uint64_t *sief = NULL;
-	sief = malloc(n * sizeof(uint64_t));
-	if (sief == NULL) {
-		printf("Error in create_sief(): Could not allocate enough memory for sief! Exiting...\n");
+	/* Allocate enough memory for the slate. */
+	uint64_t *slate = NULL;
+	slate = malloc(n * sizeof(uint64_t));
+	if (slate == NULL) {
+		printf("Error in create_slate(): Could not allocate enough memory for slate! Exiting...\n");
 		exit(-1);
 	}
 
-	return sief;
+	return slate;
 }
 
-/* Set each sief entry to zero. */
-void sief_set_zero(uint64_t *sief, uint64_t sief_size)
+/* Set each slate entry to zero. */
+void slate_set_zero(uint64_t *slate, uint64_t slate_size)
 {
-	for (uint64_t i = 0; i < sief_size; i++) {
-		sief[i] = 0;
+	for (uint64_t i = 0; i < slate_size; i++) {
+		slate[i] = 0;
 	}
 }
 
-/* Sum up all the sief entries. */
-uint64_t sief_sum(uint64_t *sief, uint64_t sief_size)
+/* Sum up all the slate entries. */
+uint64_t slate_sum(uint64_t *slate, uint64_t slate_size)
 {
 	uint64_t s = 0;
-	for (uint64_t i = 0; i < sief_size; i++)
-		s += sief[i];
+	for (uint64_t i = 0; i < slate_size; i++)
+		s += slate[i];
 
 	return s;
 }
 
 /* Take the greatest prime factor of each integer in the interval [a, b), and
- * sum them all up. This algorithm requires a sief and its size. This is
+ * sum them all up. This algorithm requires a slate and its size. This is
  * basically just a slate on which to perform calculations. */
-uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *sief, uint64_t sief_size)
+uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_size)
 {
 	/* Check that several assumptions hold. If they don't, then the program
 	 * simply dies. */
@@ -158,8 +158,8 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 		printf("Error in partial_sum_greatest_prime_factors(): Upper bound must be strictly greater than lower bound! Exiting...\n");
 		exit(-1);
 	}
-	if (b - a > sief_size) {
-		printf("Error in partial_sum_greatest_prime_factors(): Sief size must be greater than or equal to b - a. Exiting...\n");
+	if (b - a > slate_size) {
+		printf("Error in partial_sum_greatest_prime_factors(): Slate size must be greater than or equal to b - a. Exiting...\n");
 		exit(-1);
 	}
 
@@ -167,11 +167,11 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 	printf("Summing between %"PRIu64" and %"PRIu64"...\n", a, b);
 
 	/* In order to obtain a list of the greatest prime factor of each
-	 * integer within the interval [a, b), we first set every sief entry to
+	 * integer within the interval [a, b), we first set every slate entry to
 	 * zero. This will basically be a blank slate on which we will perform
 	 * our calculations.
 	 *
-	 * Then, for each multiple of 2, we write a 2 in the corresponding sief
+	 * Then, for each multiple of 2, we write a 2 in the corresponding slate
 	 * entry. This means that the greatest prime factor so far is 2.
 	 *
 	 * After that, we move on to 3, and we carry out the same process,
@@ -181,7 +181,7 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 	 *
 	 * Then, keep going, until all the primes less than the square root of
 	 * b have been used. */
-	sief_set_zero(sief, sief_size);
+	slate_set_zero(slate, slate_size);
 	uint64_t r = isqrt(b);
 	bool *basis = BASIS;
 	for (int p = 0; p <= r; p++) {
@@ -202,9 +202,9 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 		}
 
 		/* For each multiple of p, we write p itself into the
-		 * corresponding sief entry. */
+		 * corresponding slate entry. */
 		while (i < b) {
-			sief[i - a] = p;
+			slate[i - a] = p;
 			i += p;
 		}
 	}
@@ -215,10 +215,10 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 	 * primes here, I might as well take care of the primes which are less
 	 * than or equal to the square root of b. */
 	for (int i = a; i < b; i++) {
-		if (sief[i - a] == 0 && i - a > 1) {
+		if (slate[i - a] == 0 && i - a > 1) {
 			uint64_t j = i;
 			while (j < b) {
-				sief[j - a] = i;
+				slate[j - a] = i;
 				j += i;
 				/* NOTE: If a is zero, then you're re-marking
 				 * all the multiples of the primes which are
@@ -232,23 +232,23 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 	 * cases of 0 and 1, we take care of them here. For our purposes, zero
 	 * is the greatest prime factor of both 0 and 1. */
 	if (a == 1) {
-		sief[1 - a] = 0;
+		slate[1 - a] = 0;
 	} else if (a == 0) {
-		sief[0 - a] = 0;
-		sief[1 - a] = 0;
+		slate[0 - a] = 0;
+		slate[1 - a] = 0;
 	}
 
-	/* Finally, return the sum of the sief entries. */
-	return sief_sum(sief, sief_size);
+	/* Finally, return the sum of the slate entries. */
+	return slate_sum(slate, slate_size);
 }
 
 /* Apply the partial_sum_great_prime_factors() function in adjacent intervals
  * in order to get a total sum of one grand interval. */
 uint64_t total_sum_greatest_prime_factors(uint64_t n)
 {
-	/* Create the basis and sief to be used. */
+	/* Create the basis and slate to be used. */
 	BASIS = get_basis(n);
-	uint64_t *sief = create_sief(INTERVAL_SIZE);
+	uint64_t *slate = create_slate(INTERVAL_SIZE);
 
 	/* Divide up the interval [0, n) into smaller intervals, given by the
 	 * global INTERVAL_SIZE. */
@@ -259,10 +259,10 @@ uint64_t total_sum_greatest_prime_factors(uint64_t n)
 	 * last interval. */
 	uint64_t s = 0;
 	for (uint64_t k = 0; k < q; k++) {
-		s += partial_sum_greatest_prime_factors(k * INTERVAL_SIZE, (k + 1) * INTERVAL_SIZE, sief, INTERVAL_SIZE);
+		s += partial_sum_greatest_prime_factors(k * INTERVAL_SIZE, (k + 1) * INTERVAL_SIZE, slate, INTERVAL_SIZE);
 	}
 	if (r > 0) {
-		s += partial_sum_greatest_prime_factors(q * INTERVAL_SIZE, n, sief, INTERVAL_SIZE);
+		s += partial_sum_greatest_prime_factors(q * INTERVAL_SIZE, n, slate, INTERVAL_SIZE);
 	}
 
 	/* Finally, let the user know the grand sum, and return it. */
