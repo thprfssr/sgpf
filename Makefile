@@ -13,9 +13,6 @@ CFLAGS += $(CLIFLAGS)
 all: $(OBJECT)
 	$(CC) -o $(OUTPUT) $^ $(LFLAGS)
 
-primesum.o: $(SOURCE)
-	$(CC) -c $(CFLAGS) $< -o $@
-
 clean:
 	rm -f $(OUTPUT) $(OBJECT)
 .PHONY: clean
