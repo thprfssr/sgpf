@@ -168,20 +168,20 @@ char* slate_sum(uint64_t *slate, uint64_t slate_size)
 }
 
 /* Check that several important assumptions hold. These assumptions are made for
- * the function partial_sum_greatest_prime_factors(). If one of the assumptions
+ * the function partial_sum_gpf(). If one of the assumptions
  * fails, then the program simply dies. */
 void partial_sum_assumption_check(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_size)
 {
 	if (b <= a) {
-		printf("Error in partial_sum_greatest_prime_factors(): Upper bound must be strictly greater than lower bound! Exiting...\n");
+		printf("Error in partial_sum_gpf(): Upper bound must be strictly greater than lower bound! Exiting...\n");
 		exit(-1);
 	}
 	if (b - a > slate_size) {
-		printf("Error in partial_sum_greatest_prime_factors(): Slate size must be greater than or equal to b - a. Exiting...\n");
+		printf("Error in partial_sum_gpf(): Slate size must be greater than or equal to b - a. Exiting...\n");
 		exit(-1);
 	}
 	if (slate == NULL) {
-		printf("Error in partial_sum_greatest_prime_factors(): Given slate is NULL! Exiting...\n");
+		printf("Error in partial_sum_gpf(): Given slate is NULL! Exiting...\n");
 	}
 }
 
@@ -190,7 +190,7 @@ void partial_sum_assumption_check(uint64_t a, uint64_t b, uint64_t *slate, uint6
  * basically just a slate on which to perform calculations.
  *
  * The sum is returned as a decimal string. */
-char* partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_size)
+char* partial_sum_gpf(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_size)
 {
 	/* Check that several assumptions hold, or die. */
 	partial_sum_assumption_check(a, b, slate, slate_size);
@@ -274,15 +274,15 @@ char* partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *slate
 	return slate_sum(slate, slate_size);
 }
 
-/* This is just a rewrite of partial_sum_greatest_prime_factors(). */
-char* partial_sum_greatest_prime_factors_new_algorithm(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_size)
+/* This is just a rewrite of partial_sum_gpf(). */
+char* partial_sum_gpf_new_algorithm(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_size)
 {
 }
 
 
 /* Apply the partial_sum_great_prime_factors() function in adjacent intervals
  * in order to get a total sum of one grand interval. */
-char* total_sum_greatest_prime_factors(uint64_t n)
+char* total_sum_gpf(uint64_t n)
 {
 	/* Create the basis and slate to be used. */
 	BASIS = get_basis(n);
@@ -301,16 +301,16 @@ char* total_sum_greatest_prime_factors(uint64_t n)
 	mpz_t tmp;
 	mpz_init(tmp);
 	for (uint64_t k = 0; k < q; k++) {
-		char *str = partial_sum_greatest_prime_factors(k * INTERVAL_SIZE, (k + 1) * INTERVAL_SIZE, slate, INTERVAL_SIZE);
+		char *str = partial_sum_gpf(k * INTERVAL_SIZE, (k + 1) * INTERVAL_SIZE, slate, INTERVAL_SIZE);
 		mpz_set_str(tmp, str, 10);
 		mpz_add(s, s, tmp);
-		//s += partial_sum_greatest_prime_factors(k * INTERVAL_SIZE, (k + 1) * INTERVAL_SIZE, slate, INTERVAL_SIZE);
+		//s += partial_sum_gpf(k * INTERVAL_SIZE, (k + 1) * INTERVAL_SIZE, slate, INTERVAL_SIZE);
 	}
 	if (r > 0) {
-		char *str = partial_sum_greatest_prime_factors(q * INTERVAL_SIZE, n, slate, INTERVAL_SIZE);
+		char *str = partial_sum_gpf(q * INTERVAL_SIZE, n, slate, INTERVAL_SIZE);
 		mpz_set_str(tmp, str, 10);
 		mpz_add(s, s, tmp);
-		//s += partial_sum_greatest_prime_factors(q * INTERVAL_SIZE, n, slate, INTERVAL_SIZE);
+		//s += partial_sum_gpf(q * INTERVAL_SIZE, n, slate, INTERVAL_SIZE);
 	}
 
 	/* Convert the sum to a decimal string, and clear all the GMP
@@ -320,7 +320,7 @@ char* total_sum_greatest_prime_factors(uint64_t n)
 	mpz_clear(s);
 	mpz_clear(tmp);
 	if (str == NULL) {
-		printf("Error in total_sum_greatest_prime_factors(): str is NULL! Exiting...\n");
+		printf("Error in total_sum_gpf(): str is NULL! Exiting...\n");
 		exit(-1);
 	}
 
@@ -335,7 +335,7 @@ int main(int *argc, char **argv)
 	uint64_t n = strtoull(argv[1], NULL, 10);
 
 	/* Start chugging. */
-	total_sum_greatest_prime_factors(n);
+	total_sum_gpf(n);
 
 
 	return 0;
