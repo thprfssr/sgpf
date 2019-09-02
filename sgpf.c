@@ -10,6 +10,31 @@
 /* FIXME: The final result that the program spits out is dependent on the
  * chosen interval size. */
 
+/* DISCUSSION: AH! I think I found the cause. Let N = 40, and let the interval
+ * size be 20. The first partial interval of [0, 20) goes smoothly, but let's
+ * take a look at the second partial interval of [20, 40). The integer square
+ * root of 40 is 6, so we only need to consider the primes {2, 3, 5} according
+ * to my algorithm. We start writing `2` into the entry of each multiple of 2,
+ * and likewise we write `3`, and `5`. Then the empty entries that remain must
+ * be prime numbers, so we mark them as well, along with their multiples.
+ *
+ * But look! According to this algorithm, the greatest prime factor of 21 is
+ * supposedly 3. How alarming! My gut says that THIS is the reason that the
+ * total sum is dependent on the interval size.
+ *
+ * This problem only arises if we're dealing with an interval that doesn't
+ * start at zero. Hence, if the interval size is as big as N or bigger, then
+ * this shouldn't be a problem. */
+
+/* SOLUTION: As we're summing up each partial interval, we need to have kept
+ * track of all the primes we encountered in the previous partial intervals. We
+ * can keep these primes in an array. The amount of memory required for this
+ * array can be determined by some magic formula that might exist, or we can
+ * simply keep a file which contains pi(k) for a couple of values of k, where
+ * pi is the prime counting function. We could also reallocate the array if it
+ * goes overboard, but we shouldn't do that too often, because it would slow
+ * the program down. */
+
 bool *BASIS = NULL;
 
 /* A simple primality check. It should be used sparingly, lest you want the
