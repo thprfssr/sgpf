@@ -280,13 +280,7 @@ char* partial_sum_gpf(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_si
 		 * itself, and which must be within the interval [a, b). It
 		 * must not b itself, because we're dealing with primes in a
 		 * later part of this function. */
-		uint64_t i = a;
-		while (i % p != 0) {
-			i++;
-		}
-		while (i <= p) {
-			i += p;
-		}
+		uint64_t i = smallest_strict_multiple_not_less_than(p, a);
 
 		/* For each multiple of p, we write p itself into the
 		 * corresponding slate entry. */
