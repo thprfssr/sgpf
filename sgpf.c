@@ -118,6 +118,13 @@ bool *get_basis(uint64_t n)
 /* Return n / f^m, where f^m is the greatest power of f which divides n. */
 uint64_t divide_out(uint64_t n, uint64_t f)
 {
+	if (n == 0) {
+		return n;
+	}
+	if (f == 0) {
+		printf("Error in divide_out(): Division by zero! Exiting...\n");
+		exit(-1);
+	}
 	while (n % f == 0) {
 		n /= f;
 	}
@@ -358,6 +365,8 @@ char* partial_sum_gpf_new_algorithm(uint64_t a, uint64_t b, uint64_t *slate, uin
 				slate[i - a] = p;
 			else
 				slate[i - a] = u;
+
+			i += p;
 		}
 	}
 	return slate_sum(slate, slate_size);
