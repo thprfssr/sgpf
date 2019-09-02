@@ -9,6 +9,7 @@
 #include "arithmetic.h"
 #include "basis.h"
 #include "slate.h"
+#include "gpf.h"
 
 int main(int *argc, char **argv)
 {
