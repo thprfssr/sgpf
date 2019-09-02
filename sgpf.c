@@ -163,6 +163,10 @@ uint64_t partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *si
 			while (j < b) {
 				sief[j - a] = i;
 				j += i;
+				/* NOTE: If a is zero, then you're re-marking
+				 * all the multiples of the primes which are
+				 * less than the square root. This is slightly
+				 * inefficient. */
 			}
 		}
 	}
