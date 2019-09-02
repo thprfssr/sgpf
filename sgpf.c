@@ -333,6 +333,12 @@ char* partial_sum_gpf(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_si
 /* This is just a rewrite of partial_sum_gpf(). */
 char* partial_sum_gpf_new_algorithm(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_size)
 {
+	/* Check that several assumptions hold, or die. */
+	partial_sum_assumption_check(a, b, slate, slate_size);
+
+	/* Let the user know that everything is running smoothly. */
+	printf("Summing between %"PRIu64" and %"PRIu64"...\n", a, b);
+
 	/* Set the elements of the slate to be [a, a+1, ... , b-1]. */
 	slate_set_consecutive(slate, slate_size, a, b);
 
