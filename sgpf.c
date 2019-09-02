@@ -274,6 +274,12 @@ char* partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *slate
 	return slate_sum(slate, slate_size);
 }
 
+/* This is just a rewrite of partial_sum_greatest_prime_factors(). */
+char* partial_sum_greatest_prime_factors_new_algorithm(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_size)
+{
+}
+
+
 /* Apply the partial_sum_great_prime_factors() function in adjacent intervals
  * in order to get a total sum of one grand interval. */
 char* total_sum_greatest_prime_factors(uint64_t n)
