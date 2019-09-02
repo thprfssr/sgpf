@@ -227,7 +227,7 @@ void slate_set_consecutive(uint64_t *slate, uint64_t slate_size, uint64_t a, uin
 	/* Set the remaining elements to zero. It is more efficient to zero
 	 * these few elements at the end rather than to zero every element in
 	 * the beginning. */
-	for (uint64_t i = b; i < slate_size; i++) {
+	for (uint64_t i = b; i - a < slate_size; i++) {
 		slate[i - a] = 0;
 	}
 }
