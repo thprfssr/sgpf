@@ -302,6 +302,27 @@ char* partial_sum_gpf(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_si
 /* This is just a rewrite of partial_sum_gpf(). */
 char* partial_sum_gpf_new_algorithm(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_size)
 {
+	/* Set the elements of the slate to be [a, a+1, ... , b-1]. */
+	slate_set_consecutive(slate, slate_size, a, b);
+
+	/* Take care of the special cases of 0 and 1. For our purposes with
+	 * Project Euler 642, they should be set to zero. */
+	if (a == 1) {
+		slate[1 - a] = 0;
+	} else if (a == 0) {
+		slate[0 - a] = 0;
+		slate[1 - a] = 0;
+	}
+
+	/* Loop through each prime in the basis. */
+	uint64_t r = isqrt(b);
+	bool *basis = BASIS;
+	for (int p = 0; p <= r; p++) {
+		if (basis[p] == false) {
+			continue;
+		}
+	}
+
 }
 
 
