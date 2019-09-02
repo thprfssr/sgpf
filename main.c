@@ -133,8 +133,10 @@ void partial_sum_assumption_check(uint64_t a, uint64_t b, uint64_t *slate, uint6
  * sum them all up. This algorithm requires a slate and its size. This is
  * basically just a slate on which to perform calculations.
  *
+ * It is assumed that we always stay within the bounds of the basis.
+ *
  * The sum is returned as a decimal string. */
-char* partial_sum_gpf(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_size)
+char* partial_sum_gpf(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_size, bool *basis)
 {
 	/* Check that several assumptions hold, or die. */
 	partial_sum_assumption_check(a, b, slate, slate_size);
@@ -156,7 +158,6 @@ char* partial_sum_gpf(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_si
 
 	/* Loop through each prime in the basis. */
 	uint64_t r = isqrt(b);
-	bool *basis = BASIS;
 	for (int p = 0; p <= r; p++) {
 		if (basis[p] == false) {
 			continue;
@@ -187,7 +188,7 @@ char* partial_sum_gpf(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_si
 char* total_sum_gpf(uint64_t n, uint64_t interval_size)
 {
 	/* Create the basis and slate to be used. */
-	BASIS = get_basis(n);
+	bool *basis = get_basis(n);
 	if (n <= interval_size)
 		interval_size = n;
 	if (MAX_INTERVAL_SIZE <= interval_size)
@@ -206,12 +207,12 @@ char* total_sum_gpf(uint64_t n, uint64_t interval_size)
 	mpz_t tmp;
 	mpz_init(tmp);
 	for (uint64_t k = 0; k < q; k++) {
-		char *str = partial_sum_gpf(k * interval_size, (k + 1) * interval_size, slate, interval_size);
+		char *str = partial_sum_gpf(k * interval_size, (k + 1) * interval_size, slate, interval_size, basis);
 		mpz_set_str(tmp, str, 10);
 		mpz_add(s, s, tmp);
 	}
 	if (r > 0) {
-		char *str = partial_sum_gpf(q * interval_size, n, slate, interval_size);
+		char *str = partial_sum_gpf(q * interval_size, n, slate, interval_size, basis);
 		mpz_set_str(tmp, str, 10);
 		mpz_add(s, s, tmp);
 	}
