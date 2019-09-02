@@ -385,13 +385,13 @@ char* total_sum_gpf(uint64_t n)
 	mpz_t tmp;
 	mpz_init(tmp);
 	for (uint64_t k = 0; k < q; k++) {
-		char *str = partial_sum_gpf(k * INTERVAL_SIZE, (k + 1) * INTERVAL_SIZE, slate, INTERVAL_SIZE);
+		char *str = partial_sum_gpf_new_algorithm(k * INTERVAL_SIZE, (k + 1) * INTERVAL_SIZE, slate, INTERVAL_SIZE);
 		mpz_set_str(tmp, str, 10);
 		mpz_add(s, s, tmp);
 		//s += partial_sum_gpf(k * INTERVAL_SIZE, (k + 1) * INTERVAL_SIZE, slate, INTERVAL_SIZE);
 	}
 	if (r > 0) {
-		char *str = partial_sum_gpf(q * INTERVAL_SIZE, n, slate, INTERVAL_SIZE);
+		char *str = partial_sum_gpf_new_algorithm(q * INTERVAL_SIZE, n, slate, INTERVAL_SIZE);
 		mpz_set_str(tmp, str, 10);
 		mpz_add(s, s, tmp);
 		//s += partial_sum_gpf(q * INTERVAL_SIZE, n, slate, INTERVAL_SIZE);
