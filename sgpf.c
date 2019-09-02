@@ -7,6 +7,9 @@
 
 #define INTERVAL_SIZE 10000000
 
+/* FIXME: The final result that the program spits out is dependent on the
+ * chosen interval size. */
+
 bool *BASIS = NULL;
 
 /* A simple primality check. It should be used sparingly, lest you want the
