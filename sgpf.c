@@ -167,15 +167,11 @@ char* slate_sum(uint64_t *slate, uint64_t slate_size)
 	return str;
 }
 
-/* Take the greatest prime factor of each integer in the interval [a, b), and
- * sum them all up. This algorithm requires a slate and its size. This is
- * basically just a slate on which to perform calculations.
- *
- * The sum is returned as a decimal string. */
-char* partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_size)
+/* Check that several important assumptions hold. These assumptions are made for
+ * the function partial_sum_greatest_prime_factors(). If one of the assumptions
+ * fails, then the program simply dies. */
+void partial_sum_assumption_check(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_size)
 {
-	/* Check that several assumptions hold. If they don't, then the program
-	 * simply dies. */
 	if (b <= a) {
 		printf("Error in partial_sum_greatest_prime_factors(): Upper bound must be strictly greater than lower bound! Exiting...\n");
 		exit(-1);
@@ -184,6 +180,20 @@ char* partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *slate
 		printf("Error in partial_sum_greatest_prime_factors(): Slate size must be greater than or equal to b - a. Exiting...\n");
 		exit(-1);
 	}
+	if (slate == NULL) {
+		printf("Error in partial_sum_greatest_prime_factors(): Given slate is NULL! Exiting...\n");
+	}
+}
+
+/* Take the greatest prime factor of each integer in the interval [a, b), and
+ * sum them all up. This algorithm requires a slate and its size. This is
+ * basically just a slate on which to perform calculations.
+ *
+ * The sum is returned as a decimal string. */
+char* partial_sum_greatest_prime_factors(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_size)
+{
+	/* Check that several assumptions hold, or die. */
+	partial_sum_assumption_check(a, b, slate, slate_size);
 
 	/* Let the user know that everything is running smoothly. */
 	printf("Summing between %"PRIu64" and %"PRIu64"...\n", a, b);
