@@ -10,8 +10,6 @@
 
 #include "arithmetic.h"
 
-bool *BASIS = NULL;
-
 /* A basis is nothing more than an array of bools, which tells us the primality
  * of each integer up to the square root of n. */
 bool *get_basis(uint64_t n);
