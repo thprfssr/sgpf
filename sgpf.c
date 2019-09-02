@@ -68,6 +68,9 @@
  * I tried this out with a couple of random intervals which don't start at zero,
  * and it worked! I think this really might be the algorithm I need. */
 
+/* FIXME: The total sum is the same if the interval size evenly divides N.
+ * However, if it doesn't evenly divide N, then the sum is different. */
+
 bool *BASIS = NULL;
 
 /* A simple primality check. It should be used sparingly, lest you want the
