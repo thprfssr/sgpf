@@ -87,6 +87,12 @@ char* partial_sum_gpf(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_si
 		if (basis[p] == false) {
 			continue;
 		}
+		
+		if (p < 1000) {
+			printf("Dividing by %i...\n", p);
+		} else if (p == 1013) {
+			printf("Dividing by higher primes...\n");
+		}
 
 		uint64_t i = smallest_multiple_not_less_than(p, a);
 		while (i < b) {
