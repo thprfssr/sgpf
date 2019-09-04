@@ -28,7 +28,7 @@ char* partial_sum_gpf(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_si
 
 /* Apply the partial_sum_great_prime_factors() function in adjacent intervals
  * in order to get a total sum of one grand interval. */
-char* total_sum_gpf(uint64_t n, uint64_t interval_size);
+char* total_sum_gpf(uint64_t a, uint64_t b, uint64_t interval_size);
 
 
 #endif

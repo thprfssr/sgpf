@@ -116,18 +116,19 @@ char* partial_sum_gpf(uint64_t a, uint64_t b, uint64_t *slate, uint64_t slate_si
 
 /* Apply the partial_sum_great_prime_factors() function in adjacent intervals
  * in order to get a total sum of one grand interval. */
-char* total_sum_gpf(uint64_t n, uint64_t interval_size)
+char* total_sum_gpf(uint64_t a, uint64_t b, uint64_t interval_size)
 {
 	/* Create the basis and slate to be used. */
-	bool *basis = get_basis(n);
-	if (n <= interval_size)
-		interval_size = n;
+	bool *basis = get_basis(b);
+	if (b - a <= interval_size)
+		interval_size = b - a;
 	if (MAX_INTERVAL_SIZE <= interval_size)
 		interval_size = MAX_INTERVAL_SIZE;
 	uint64_t *slate = create_slate(interval_size);
 
 	/* Divide up the interval [0, n) into smaller intervals, whose sizes are
 	 * given by the variable `interval_size`. */
+	uint64_t n = b - a;
 	uint64_t q = n / interval_size;
 	uint64_t r = n % interval_size;
 
@@ -138,12 +139,12 @@ char* total_sum_gpf(uint64_t n, uint64_t interval_size)
 	mpz_t tmp;
 	mpz_init(tmp);
 	for (uint64_t k = 0; k < q; k++) {
-		char *str = partial_sum_gpf(k * interval_size, (k + 1) * interval_size, slate, interval_size, basis);
+		char *str = partial_sum_gpf(k * interval_size + a, (k + 1) * interval_size + a, slate, interval_size, basis);
 		mpz_set_str(tmp, str, 10);
 		mpz_add(s, s, tmp);
 	}
 	if (r > 0) {
-		char *str = partial_sum_gpf(q * interval_size, n, slate, interval_size, basis);
+		char *str = partial_sum_gpf(q * interval_size + a, b, slate, interval_size, basis);
 		mpz_set_str(tmp, str, 10);
 		mpz_add(s, s, tmp);
 	}
@@ -160,6 +161,7 @@ char* total_sum_gpf(uint64_t n, uint64_t interval_size)
 	}
 
 	/* Finally, let the user know the grand sum, and return it. */
-	printf("The total sum of all the greatest prime factors strictly less than %" PRIu64 " is:\n%s\n", n, str);
+	//printf("The total sum of all the greatest prime factors strictly less than %" PRIu64 " is:\n%s\n", n, str);
+	printf("interval:\t[%i, %i)\ntotal sum:\t%s\n", a, b, str);
 	return str;
 }
