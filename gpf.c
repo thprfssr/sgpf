@@ -142,6 +142,8 @@ char* total_sum_gpf(uint64_t a, uint64_t b, uint64_t interval_size)
 		char *str = partial_sum_gpf(k * interval_size + a, (k + 1) * interval_size + a, slate, interval_size, basis);
 		mpz_set_str(tmp, str, 10);
 		mpz_add(s, s, tmp);
+
+		printf("running interval:\t[%i, %i)\nrunning sum:\t%s\n", a, (k + 1) * interval_size + a, mpz_get_str(NULL, 10, s));
 	}
 	if (r > 0) {
 		char *str = partial_sum_gpf(q * interval_size + a, b, slate, interval_size, basis);
