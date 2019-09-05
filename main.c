@@ -22,7 +22,8 @@ int main(int *argc, char **argv)
 
 	/* Obtain the interval size as an argument. */
 	//uint64_t interval_size = strtoull(argv[2], NULL, 10);
-	uint64_t interval_size = strtoull(argv[3], NULL, 10);
+	uint64_t interval_byte_size = strtoull(argv[3], NULL, 10);
+	uint64_t interval_size = interval_byte_size / sizeof(uint64_t);
 
 	/* Start chugging. */
 	//total_sum_gpf(n, interval_size);
