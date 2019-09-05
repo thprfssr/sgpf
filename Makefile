@@ -16,11 +16,11 @@ all: $(OUTPUT)
 sgpf: $(OBJECT)
 	$(CC) -o $(OUTPUT) $^ $(LFLAGS)
 
-main.o: arithmetic.h basis.h slate.h gpf.h
+main.o: arithmetic.h basis.h slate.h gpf.h main.h
 arithmetic.o: arithmetic.h
 basis.o: arithmetic.h basis.h
 slate.o: arithmetic.h basis.h slate.h
-gpf.o: arithmetic.h basis.h slate.h gpf.h
+gpf.o: arithmetic.h basis.h slate.h gpf.h main.h
 
 clean:
 	rm -f $(OUTPUT) $(OBJECT)

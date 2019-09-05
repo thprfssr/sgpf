@@ -12,7 +12,7 @@
 #include "arithmetic.h"
 #include "basis.h"
 
-#define MAX_INTERVAL_SIZE 10000000
+// #define MAX_INTERVAL_SIZE 10000000
 
 /* A slate is simply an array of integers. It's basically just a blank slate on
  * which we will perform our future calculations. */

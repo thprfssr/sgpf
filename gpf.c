@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <gmp.h>
 
+#include "main.h"
 #include "arithmetic.h"
 #include "basis.h"
 #include "slate.h"
