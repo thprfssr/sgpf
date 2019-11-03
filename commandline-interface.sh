@@ -15,6 +15,11 @@ lower_bound=0
 upper_bound=1000000
 memory_usage=100000000 # 100MB
 
+# If no arguments passed, set the appropriate flag
+if (( $# == 0 )); then
+	no_arguments_flag=true
+fi
+
 function print_help
 {
 	cat <<EOF
@@ -175,7 +180,7 @@ parse_flags
 
 # If no initial arguments were provided, let the user know that they can access
 # a list of command line options
-if (( $# == 0 )); then
+if $no_arguments_flag; then
 	echo -e "\n\n"
 	echo "No arguments provided; using default values."
 	echo "Use -h or --help to see a list of command line options."
