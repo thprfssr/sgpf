@@ -20,6 +20,7 @@ binary: $(OBJECT)
 
 sgpf: $(BINARY) $(WRAPPER)
 	cat $(WRAPPER) > $(OUTPUT)
+	chmod +x $(OUTPUT)
 
 main.o: arithmetic.h basis.h slate.h gpf.h main.h
 arithmetic.o: arithmetic.h
