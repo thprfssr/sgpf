@@ -107,7 +107,7 @@ function sanity_check
 	elif [ -z "$b" ]; then
 		echo Error! No argument provided for the upper bound! Exiting...
 		exit -1
-	elif [ -z "$mem"]; then
+	elif [ -z "$mem" ]; then
 		echo Error! No argument provided for the memory usage! Exiting...
 		exit -1
 	fi
