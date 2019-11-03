@@ -9,6 +9,7 @@ executable=./binary
 params=""
 help_flag=false
 no_arguments_flag=false
+minimum_memory_usage=8 # Bytes
 
 # Default program parameters
 lower_bound=0
@@ -105,6 +106,9 @@ function sanity_check
 
 	if (( $a >= $b )); then
 		echo Error! Upper bound must be strictly greater than lower bound. Exiting...
+		exit -1
+	elif (( $mem < $minimum_memory_usage )); then
+		echo Error! The minimum memory usage is $minimum_memory_usage bytes. Exiting...
 		exit -1
 	elif [ -z "$a" ]; then
 		echo Error! No argument provided for the lower bound! Exiting...
