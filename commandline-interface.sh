@@ -103,8 +103,8 @@ function sanity_check
 	b=$2
 	mem=$3
 
-	if (( $a > $b )); then
-		echo Error! Lower bound CANNOT be greater than upper bound. Exiting...
+	if (( $a >= $b )); then
+		echo Error! Upper bound must be strictly greater than lower bound. Exiting...
 		exit -1
 	elif [ -z "$a" ]; then
 		echo Error! No argument provided for the lower bound! Exiting...
