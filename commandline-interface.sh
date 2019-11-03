@@ -5,7 +5,7 @@
 
 # Flags and variables which will be used for parsing command line options.
 program_name=$(basename $0)
-executable=./sgpf
+executable=./binary
 params=""
 help_flag=false
 no_arguments_flag=false
