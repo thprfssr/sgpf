@@ -30,7 +30,7 @@ Options:
 -h, --help      display help message and exit
 -m              specify the memory usage in bytes (default 100MB)
 -a              specify the inclusive lower bound (default 0)
--b              specify the inclusive upper bound (default 1M)
+-b              specify the exclusive upper bound (default 1M)
 
 NOTE: Integers can be written in the following format:
 	1k      = 1000
